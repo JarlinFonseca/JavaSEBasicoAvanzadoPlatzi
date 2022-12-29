@@ -2,6 +2,13 @@ package com.anncode.amazonviewer.model;
 
 import java.util.ArrayList;
 
+/**
+ * Hereda de {@link Film}
+ * Esta clase representa una serie
+ * @author Jarlin Fonseva
+ * @since 2022
+ * @version 1.0
+ */
 public class Serie extends Film  {
 
 	private int id;
