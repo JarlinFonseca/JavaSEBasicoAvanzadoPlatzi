@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import com.anncode.amazonviewer.model.*;
 import com.anncode.makereport.Report;
@@ -260,16 +262,28 @@ public class Main {
 		report.setNameFile("reporte");
 		report.setExtension("txt");
 		report.setTitle(":: VISTOS ::");
-		String contentReport = "";
+		StringBuilder contentReport = new StringBuilder();
 
-		for (Movie movie : movies) {
+		movies.stream().filter(m -> m.getIsViewed()).forEach(m -> contentReport.append(m.toString() + "\n"));
+
+		//Predicate<Serie> seriesViewed = s -> s.getIsViewed();
+		//Consumer<Serie> seriesEach = s -> contentReport.append(s.toString() + "\n");
+		Consumer<Serie> seriesEach = s -> {
+			ArrayList<Chapter> chapters = s.getChapters();
+			chapters.stream().filter(c ->  c.getIsViewed()).forEach(c -> contentReport.append(c.toString() + "\n"));
+		};
+		series.stream().forEach(seriesEach);
+
+		books.stream().filter(b -> b.getIsReaded()).forEach(b -> contentReport.append(b.toString() + "\n"));
+
+		/*for (Movie movie : movies) {
 			if (movie.getIsViewed()) {
 				contentReport += movie.toString() + "\n";
 
 			}
-		}
+		}*/
 
-		for (Serie serie : series) {
+		/*for (Serie serie : series) {
 			ArrayList<Chapter> chapters = serie.getChapters();
 			for (Chapter chapter : chapters) {
 				if (chapter.getIsViewed()) {
@@ -285,9 +299,9 @@ public class Main {
 				contentReport += book.toString() + "\n";
 
 			}
-		}
+		}*/
 
-		report.setContent(contentReport);
+		report.setContent(contentReport.toString());
 		report.makeReport();
 		System.out.println("Reporte Generado");
 		System.out.println();
@@ -296,6 +310,7 @@ public class Main {
 	public static void makeReport(Date date) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd-h-m-s-S");
 		String dateString = df.format(date);
+		System.out.println(dateString);
 		Report report = new Report();
 
 		report.setNameFile("reporte" + dateString);
@@ -303,7 +318,7 @@ public class Main {
 		report.setTitle(":: VISTOS ::");
 
 
-		SimpleDateFormat dfNameDays = new SimpleDateFormat("E, W MMM Y");
+		SimpleDateFormat dfNameDays = new SimpleDateFormat("E, dd MMM Y");
 		dateString = dfNameDays.format(date);
 		String contentReport = "Date: " + dateString + "\n\n\n";
 
